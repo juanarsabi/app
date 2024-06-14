@@ -1,0 +1,18 @@
+# Ambiente virtual
+/my-env/
+
+# Archivos de configuración
+.env
+
+# cache
+__pycache__/
+
+#.vscode
+/.vscode/
+
+# App
+/dist/
+main.spec
+
+# Build
+/build/
