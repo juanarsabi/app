@@ -16,7 +16,7 @@ def main():
         encuestas = pro.obtener_encuestas()
         for e in encuestas:
             encuesta = e.split('/')[-1].replace('.csv', '')
-            ruta_videos = f'../videos/{p}/{encuesta}'
+            ruta_videos = f'../../videos/{p}/{encuesta}'
             videos = os.listdir(ruta_videos)
             v = video.Video(ruta_videos, videos)
             v.for_each_video()
@@ -26,7 +26,7 @@ def main():
         encuestas = pro.obtener_encuestas()
         for e in encuestas:
             encuesta = e.split('/')[-1].replace('.csv', '')
-            ruta_videos = f'../videos/{p}/{encuesta}/processed' #TODO: Carpeta atras
+            ruta_videos = f'../../videos/{p}/{encuesta}/processed' #TODO: Carpeta atras
             videos = os.listdir(ruta_videos)
             for v in videos:
                 if(v.endswith('.mp4')):
@@ -40,35 +40,35 @@ def main():
     for p in proyectos:
         pro = proyecto.Proyecto(p)
         encuestas = pro.obtener_encuestas()
-        if(os.path.exists(f'../resultados/') == False):
-            os.mkdir(f'../resultados/')
-        os.mkdir(f'../resultados/{p}')
+        if(os.path.exists(f'../../resultados/') == False):
+            os.mkdir(f'../../resultados/')
+        os.mkdir(f'../../resultados/{p}')
         for e in encuestas:            
             e_parts = e.split('/')
             desired_parts = e_parts[2:4]
             encuesta = "/" + "/".join(desired_parts)
             encuesta = encuesta.replace('.csv', '')
-            audios = os.listdir(f'../audios/{encuesta}')
+            audios = os.listdir(f'../../audios/{encuesta}')
             audios.remove('processed')
-            ruta_resultados = f'../resultados/{encuesta}'
+            ruta_resultados = f'../../resultados/{encuesta}'
             os.mkdir(ruta_resultados)
             for a in audios:
                 if(a.endswith('.mp3')):
-                    transcription.transcribe_video(f'../audios/{encuesta}/{a}', ruta_resultados)
+                    transcription.transcribe_video(f'../../audios/{encuesta}/{a}', ruta_resultados)
                 else:
                     os.mkdir(f'{ruta_resultados}/{a}')
-                    a_usuario = os.listdir(f'../audios/{encuesta}/{a}')
+                    a_usuario = os.listdir(f'../../audios/{encuesta}/{a}')
                     for j in a_usuario:
-                        transcription.transcribe_video(f'../audios/{encuesta}/{a}/{j}', f'{ruta_resultados}/{a}')
+                        transcription.transcribe_video(f'../../audios/{encuesta}/{a}/{j}', f'{ruta_resultados}/{a}')
     #TODO: Validar respuestas y sacar archivo final
     for p in proyectos:
         pro = proyecto.Proyecto(p)
         encuestas = pro.obtener_encuestas()
         for e in encuestas:
             encuesta = e.split('/')[-1].replace('.csv', '')
-            preguntas = pd.read_csv(f'../preguntas/{p}/{encuesta}.csv', sep=';')
+            preguntas = pd.read_csv(f'../../preguntas/{p}/{encuesta}.csv', sep=';')
             agrupadas = preguntas.groupby('fase')
-            resultados = os.listdir(f'../resultados/{p}/{encuesta}')
+            resultados = os.listdir(f'../../resultados/{p}/{encuesta}')
             respuestas = []
             for r in resultados:
                 respuestas_usuario = {}
@@ -79,7 +79,7 @@ def main():
                     print(f'Tiene 1 video')
                     for fase, grupo in agrupadas:
                         for i, row in grupo.iterrows():
-                            usuario = pd.read_csv(f'../resultados/{p}/{encuesta}/{r}')
+                            usuario = pd.read_csv(f'../../resultados/{p}/{encuesta}/{r}')
                             usuario['start'] = usuario['start'].apply(math.floor)     
                             usuario['end'] = usuario['end'].apply(math.floor)   
                             if(fase != 1):
@@ -98,12 +98,12 @@ def main():
                                 respuestas_usuario[row["pregunta"]] = respuesta
                 else:
                     print(f'Tiene varios videos')
-                    audios_usuario = os.listdir(f'../resultados/{p}/{encuesta}/{r}')
+                    audios_usuario = os.listdir(f'../../resultados/{p}/{encuesta}/{r}')
                     for ad in audios_usuario:
                         for fase, grupo in agrupadas:
                             for i, row in grupo.iterrows():
                                 if(len(audios_usuario) < 3):
-                                    usuario = pd.read_csv(f'../resultados/{p}/{encuesta}/{r}/{ad}')
+                                    usuario = pd.read_csv(f'../../resultados/{p}/{encuesta}/{r}/{ad}')
                                     usuario['start'] = usuario['start'].apply(math.floor)     
                                     usuario['end'] = usuario['end'].apply(math.floor)   
                                     if(fase == 3):
@@ -120,7 +120,7 @@ def main():
                                                 print(f'No pertenece al tiempo estipulado: {utilidades.convert_to_seconds(row["ini"])} | <= {registro["start"]} | {utilidades.convert_to_seconds(row["fin"])}')
                                                 respuesta = 'No responde'
                                 else:
-                                    usuario = pd.read_csv(f'../resultados/{p}/{encuesta}/{r}/{ad}')
+                                    usuario = pd.read_csv(f'../../resultados/{p}/{encuesta}/{r}/{ad}')
                                     usuario['start'] = usuario['start'].apply(math.floor)     
                                     usuario['end'] = usuario['end'].apply(math.floor)   
                                     respuesta = []
@@ -142,10 +142,10 @@ def main():
             print('-----------------------------------')
             print(respuestas)
             csv = pd.DataFrame(respuestas)
-            csv.to_csv(f'../resultados/{p}/{encuesta}/consolidado.csv', index=False, sep=';')
+            csv.to_csv(f'../../resultados/{p}/{encuesta}/consolidado.csv', index=False, sep=';')
 
 def mostrar_proyectos():    
-    df = pd.read_csv('../proyectos/insumo.csv', sep=';') #TODO: Carpeta atras
+    df = pd.read_csv('../../proyectos/insumo.csv', sep=';') #TODO: Carpeta atras
     columna = df['proyecto'].values.tolist()
     ventana = tk.Tk()
     lista = tk.Listbox(ventana)
@@ -156,7 +156,7 @@ def mostrar_proyectos():
 
 def mostrar_mensaje():
     ventana = tk.Tk()
-    mensaje = tk.Label(ventana, text='Transcribiendo videos!')
+    mensaje = tk.Label(ventana, text='Videos descarga masiva!')
     mensaje.pack()
     ventana.mainloop()
 
@@ -169,12 +169,12 @@ def descargar_masivamente():
 def mostrar_ventana():
     ventana = tk.Tk()
     ventana.geometry('300x300')
-    boton = tk.Button(ventana, text='Mostrar proyectos', command=mostrar_proyectos)
+    boton = tk.Button(ventana, text='Mostrar proyectos a transcribir', command=mostrar_proyectos)
     boton.pack()
-    second_botoin = tk.Button(ventana, text='Transcribir videos', command=mostrar_mensaje)
-    second_botoin.pack()
-    ejecutar = tk.Button(ventana, text='Ejecutar', command=main)
+    ejecutar = tk.Button(ventana, text='Transcribir videos', command=main)
     ejecutar.pack()
+    second_botoin = tk.Button(ventana, text='Mostrar proyectos descarga masiva', command=mostrar_mensaje)
+    second_botoin.pack()
     descargar = tk.Button(ventana, text='Descargar masivamente', command=descargar_masivamente)
     descargar.pack()
     ventana.mainloop()

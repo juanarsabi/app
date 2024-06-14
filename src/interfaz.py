@@ -2,7 +2,7 @@ import pandas as pd
 import tkinter as tk
 
 def mostrar_proyectos():    
-    df = pd.read_csv('../proyectos/insumo.csv', sep=';') #TODO: Carpeta atras
+    df = pd.read_csv('../../proyectos/insumo.csv', sep=';') #TODO: Carpeta atras
     columna = df['proyecto'].values.tolist()
     ventana = tk.Tk()
     lista = tk.Listbox(ventana)
@@ -19,7 +19,7 @@ def mostrar_mensaje():
 
 def mostrar_ventana():
     ventana = tk.Tk()
-    ventana.geometry('300x300')
+    ventana.geometry('500x500')
     boton = tk.Button(ventana, text='Mostrar proyectos', command=mostrar_proyectos)
     boton.pack()
     second_botoin = tk.Button(ventana, text='Mostrar mensaje', command=mostrar_mensaje)

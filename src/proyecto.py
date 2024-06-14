@@ -6,7 +6,7 @@ class Proyecto:
         self.proyecto = proyecto
 
     def obtener_ruta_encuestas(self):
-        return f'../preguntas/{self.proyecto}/'
+        return f'../../preguntas/{self.proyecto}/'
     
     def obtener_encuestas(self):
         ruta_encuestas = self.obtener_ruta_encuestas()
@@ -52,4 +52,4 @@ class Proyecto:
         return lista_principal    
 
     def obtener_respuestas(self, encuesta):
-        return os.listdir(f'../resultados/{self.proyecto}/{encuesta}') #TODO: Cambiar ruta
+        return os.listdir(f'../../resultados/{self.proyecto}/{encuesta}') #TODO: Cambiar ruta
