@@ -1,3 +1,4 @@
+import re
 import os
 from dotenv import load_dotenv
 from selenium import webdriver
@@ -10,9 +11,11 @@ USUARIO=os.getenv('USUARIO')
 CONTRASENA=os.getenv('CONTRASENA')
 URL=os.getenv('URL')
 URL_PROJECTOS=os.getenv('URL_PROJECTOS')
-proyecto_nombre = '20240618 - Pruebas Automatizaciones BRI'
 
 driver = webdriver.Chrome()
+
+lista_proyectos = ['20240618 - Pruebas Automatizaciones BRI']
+lista_URL_proyectos = []
 
 def buscar_coincidencias(texto, lista):
     coincidencias = []
@@ -37,14 +40,33 @@ def obtener_proyectos():
     time.sleep(1.2)
     proyectos = driver.find_elements(By.XPATH, '/html/body/form/div[4]/div/div/div/section/article/div/div[3]/div[2]/div[2]/div')
     for proyecto in proyectos:
-        print(proyecto.find_element(By.XPATH, './div[1]').text)
-        if (proyecto.find_element(By.XPATH, './div[1]').text == proyecto_nombre):
-            print("Proyecto encontrado")
-            proyecto.click()
-            time.sleep(2.8)
+        if (proyecto.find_element(By.XPATH, './div[1]').text in lista_proyectos):
+            element = proyecto.find_element(By.XPATH, './div[1]')
+            lista_URL_proyectos.append(element.find_element(By.XPATH, './a').get_attribute("href"))
+
+def entrar_proyectos():
+    for url_proyecto in lista_URL_proyectos:
+        url = url_proyecto.replace("projecthome", "recordingresults")
+        driver.get(url)
+        time.sleep(1.2)
+        total_videos = driver.find_element(By.XPATH, '/html/body/form/div[4]/div/div/div/section/article/div/div[1]/div[4]/div[1]/div[3]/div[1]/span')
+        match = re.match(r"(\d+)-(\d+) of (\d+)", total_videos.text)
+        if (match):
+            rango_inicial = int(match.group(1))
+            rango_final = int(match.group(2))
+            total = int(match.group(3))
+            print(f'Primer resultado: {rango_inicial}-{rango_final}')
+            print(f'Segundo resultado: {rango_final} (fuera de {total})')
+        else:
+            print('Formato no valido')
+        time.sleep(8.2)
+
+
+
 
 iniciar_sesion()
 obtener_proyectos()
+entrar_proyectos()
 driver.quit()
 
 # def descargar_video(url, nombre_archivo):
